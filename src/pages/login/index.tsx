@@ -29,8 +29,7 @@ export function Login() {
                     <span className='bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent'>Link</span>
                 </h1>
             </Link>
-
-            <form  onSubmit={handleSubmit} className='w-full flex flex-col justify-center items-center max-w-xl'>
+            <form  onSubmit={handleSubmit} className='w-4/12 flex flex-col justify-center items-center max-w-xl'>
                 <Input 
                     type='email' 
                     placeholder='Digite seu email'
@@ -46,7 +45,7 @@ export function Login() {
 
                 <button 
                 type='submit'
-                className='text-white bg-blue-600 w-9/12 h-9 rounded text-lg font-medium hover:bg-blue-700'
+                className='text-white bg-blue-600 w-full h-9 rounded text-lg font-medium hover:bg-blue-700'
                 >
                     Acessar    
                 </button>               

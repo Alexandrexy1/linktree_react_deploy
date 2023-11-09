@@ -10,7 +10,7 @@ import { Private } from './routes/private';
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <Private><Home/></Private>
+        element: <Home/>
     },
     {
         path: '/login',
