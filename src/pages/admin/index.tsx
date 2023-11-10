@@ -1,31 +1,144 @@
 import { Input } from '../../components/inputs';
 import { Header } from '../../components/header';
-import { FiLink2 } from 'react-icons/fi';
+import { FormEvent, useEffect, useState } from 'react';
 
+import { FiLink2, FiTrash } from 'react-icons/fi';
+
+import { db } from '../../services/firebaseConnection'
+import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
+
+interface LinkProps {
+    id: string;
+    name: string;
+    url: string;
+    bg: string;
+    color: string;
+}
 
 export function Admin() {
+    const [linkNameInput, setLinkNameInput] = useState('');
+    const [linkUrlInput, setLinkUrlInput] = useState('');
+    const [bgLinkInput, setBgLinkInput] = useState('#121212')
+    const [textColorInput, setTextColorInput] = useState('#f1f1f1')
+    const [links, setLinks] = useState<LinkProps[]>([]) 
+   
+    useEffect(() => {
+        const linksCollection = collection(db, 'links');
+        const queryRef = query(linksCollection, orderBy('created', 'asc'));
+
+        const search = onSnapshot(queryRef, (snapshot) => {
+            const lista = [] as LinkProps[];
+
+            snapshot.forEach((item) => {
+                lista.push({
+                    id: item.id,
+                    name: item.data().name,
+                    url: item.data().url,
+                    bg: item.data().bg,
+                    color: item.data().color
+                })
+            })
+            setLinks(lista);
+        })
+
+        return () => {
+            search();
+        }
+    }, [])
+
+    async function handleRegisterLink(e: FormEvent) {
+        e.preventDefault();
+
+        if(linkNameInput === '' || bgLinkInput === '') {
+            alert('Por favor, preencha os campos antes de cadastrar.');
+            return;
+        }
+
+        await addDoc(collection(db, 'links'), {
+            name: linkNameInput,
+            url: linkUrlInput,
+            bg: bgLinkInput,
+            color: textColorInput,
+            created: new Date()
+        })
+        setLinkNameInput('');
+        setLinkUrlInput('');
+    }
+
+
     return(
-        <div className='flex flex-col w-7/12 m-auto items-center min-h-screen'>
+        <div onSubmit={handleRegisterLink}
+        className='flex flex-col w-7/12 m-auto items-center min-h-screen'>
             <Header/>
+            <form className='w-4/6 my-9 flex flex-col items-start gap-2 max-sm:w-11/12'>
+                <label className='text-white font-medium'>Nome do link</label>
+                <Input placeholder='Nome do seu link'
+                    maxLength={25}
+                    value={linkNameInput}
+                    onChange={e => setLinkNameInput(e.target.value)}/>
+                
+                <label className='text-white font-medium'>URL do link</label>
+                <Input placeholder='Digite a url...'
+                    type='url'
+                    value={linkUrlInput}
+                    onChange={e => setLinkUrlInput(e.target.value)}/>
+ 
+                <section className='flex gap-9 font-semibold items-start w-full mb-5'>
+                    <div className='text-white flex gap-3 items-end'>
+                        <label htmlFor="background-link">Fundo do link</label>
 
-            <main className='w-4/6 mt-9 flex flex-col items-center gap-3 max-sm:w-11/12'>
-                <div className='w-full flex flex-col gap-2'>
-                    <h1 className='text-white font-semibold'>Nome do link</h1>
-                    <Input placeholder='Nome do seu link'/>
-                </div>
-                <div className='w-full flex flex-col gap-2'>
-                    <h1 className='text-white font-semibold'>URL do link</h1>
-                    <Input placeholder='Digite a url...'/>
-                </div>
+                        <input 
+                            type="color" 
+                            name='background-link'
+                            className='h-8 w-9 rounded'
+                            value={bgLinkInput}
+                            onChange={e => setBgLinkInput(e.target.value)}
+                             />
+                    </div>  
 
-                <button className='text-white bg-blue-600 w-full flex items-center justify-center gap-2 h-9 rounded'>
+                    <div className='text-white flex gap-3 items-end'>
+                        <label htmlFor="color-link">Cor do link</label>
+
+                        <input 
+                            type="color" 
+                            name='color-link'
+                            className='h-8 w-9 rounded'
+                            value={textColorInput} 
+                            onChange={e => setTextColorInput(e.target.value)}/>
+                    </div>
+                </section>
+                {
+                    linkNameInput !== '' && (
+                        <div className=' flex flex-col justify-center items-center border-gray-100/25 border p-1 w-full mb-4'>
+                            <label className='text-white pt-2 text-2xl m-auto font-medium max-sm:text-base max-lg:text-xl'>Veja como está ficando</label>
+                            <article className='mt-4 w-full max-w-lg rounded-md'
+                                style={{backgroundColor: bgLinkInput, marginBottom: 8, marginTop: 4}}>
+                                <p style={{color: textColorInput }}
+                                className='px-3 py-2 font-medium text-center'
+                                >
+                                    {linkNameInput}
+                                </p>
+                            </article>
+                        </div>
+                    )
+                }
+                <button type='submit'
+                    className='text-white bg-blue-600 w-full flex items-center justify-center gap-2 h-9 rounded hover:bg-blue-700'>
                     <p className='font-semibold'>Cadastrar</p> 
                     <FiLink2/>
                 </button>
-            </main>
-            <section className='mt-20'>
-                <h2 className='text-white text-3xl font-bold'>Meus links</h2>
-            </section>
+
+            </form>
+            <h2 className='mb-4 text-white text-2xl'>Meus links</h2>
+            <article className='flex justify-between items-center w-8/12 max-w-xl h-10 px-2 rounded-md'
+                style={{backgroundColor: '#100', color: '#fff'}}>
+                <p>Github</p>
+                <div>
+                    <button className='border border-dashed p-1 rounded bg-black'>
+                        <FiTrash size={18} color='#fff'/>
+                    </button>
+                </div>
+            </article>
         </div>
     )
 }
