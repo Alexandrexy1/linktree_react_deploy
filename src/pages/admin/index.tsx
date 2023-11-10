@@ -1,7 +1,6 @@
 import { Input } from '../../components/inputs';
 import { Header } from '../../components/header';
 import { FormEvent, useEffect, useState } from 'react';
-
 import { FiLink2, FiTrash } from 'react-icons/fi';
 
 import { db } from '../../services/firebaseConnection'
@@ -63,6 +62,11 @@ export function Admin() {
         })
         setLinkNameInput('');
         setLinkUrlInput('');
+    }
+
+    async function handleDeleteLink(id: string) {
+        const docRef = doc(db, 'links', id);
+        await deleteDoc(docRef);
     }
 
 
@@ -130,15 +134,22 @@ export function Admin() {
 
             </form>
             <h2 className='mb-4 text-white text-2xl'>Meus links</h2>
-            <article className='flex justify-between items-center w-8/12 max-w-xl h-10 px-2 rounded-md'
-                style={{backgroundColor: '#100', color: '#fff'}}>
-                <p>Github</p>
-                <div>
-                    <button className='border border-dashed p-1 rounded bg-black'>
-                        <FiTrash size={18} color='#fff'/>
-                    </button>
-                </div>
-            </article>
+            
+            {links.map( item => (
+                <article 
+                    key={item.id} 
+                    className='flex justify-between items-center mt-2 w-8/12 max-w-xl h-10 px-3 rounded-md cursor-pointer'
+                    style={{backgroundColor: item.bg, color: item.color}}>
+                    <p>{item.name}</p>
+                    <div>
+                        <button 
+                            className='border border-dashed p-1 rounded bg-black'
+                            onClick={() => handleDeleteLink(item.id)}>
+                            <FiTrash size={18} color='#fff'/>
+                        </button>
+                    </div>
+                </article>
+            ))}
         </div>
     )
 }
