@@ -14,8 +14,8 @@ export function Header() {
         <nav className='bg-white m-auto p-3 rounded-md flex items-center justify-between'>
             <div className='flex gap-3'>
                 <Link to='/'>Home</Link>
-                <Link to='/'>Links</Link>
-                <Link to='/admin/networks'>Redes Sociais</Link>
+                <Link to='/admin'>Links</Link>
+                <Link to='/admin/networks'>Network</Link>
             </div>
             <button onClick={handleLogout}>
                 <CiLogout color='#f00' size={24}

@@ -1,7 +1,9 @@
 import { Input } from '../../components/inputs';
 import { Header } from '../../components/header';
+import { Button } from '../../components/button';
+
 import { FormEvent, useEffect, useState } from 'react';
-import { FiLink2, FiTrash } from 'react-icons/fi';
+import { FiTrash } from 'react-icons/fi';
 
 import { db } from '../../services/firebaseConnection'
 import { addDoc, collection, onSnapshot, query, orderBy, doc, deleteDoc } from 'firebase/firestore';
@@ -126,11 +128,7 @@ export function Admin() {
                         </div>
                     )
                 }
-                <button type='submit'
-                    className='text-white bg-blue-600 w-full flex items-center justify-center gap-2 h-9 rounded hover:bg-blue-700'>
-                    <p className='font-semibold'>Cadastrar</p> 
-                    <FiLink2/>
-                </button>
+                <Button msg='Cadastrar' />
 
             </form>
             <h2 className='mb-4 text-white text-2xl'>Meus links</h2>
@@ -138,7 +136,7 @@ export function Admin() {
             {links.map( item => (
                 <article 
                     key={item.id} 
-                    className='flex justify-between items-center mt-2 w-8/12 max-w-xl h-10 px-3 rounded-md cursor-pointer'
+                    className='flex justify-between items-center mt-2 w-8/12 max-w-xl h-10 px-3 rounded-md max-sm:w-11/12'
                     style={{backgroundColor: item.bg, color: item.color}}>
                     <p>{item.name}</p>
                     <div>
