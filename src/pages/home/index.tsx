@@ -66,7 +66,7 @@ export function Home() {
 
     return(
         <div className='flex flex-col w-full items-center justify-center py-4'>
-            <h1 className='md:text-4xl text-3xl font-bold text-white mt-20'>Alexandre Nascimento da Silva</h1>
+            <h1 className='md:text-4xl text-3xl font-bold text-white mt-20 max-sp:text-xl max-rp:text-2xl px-3'>Alexandre Nascimento da Silva</h1>
             <span className='text-gray-200 mt-4 mb-4'>Veja meus links 👇</span>
             <main className='flex flex-col w-11/12 max-w-xl text-center'>
                 { links && links.map( item => (
